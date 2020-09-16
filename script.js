@@ -18,12 +18,15 @@ $(document).on("click", ".submitBtn", function (event) {
         method: "GET"
       })
         .then(function(response) {
-          console.log(response);
-          console.log(response.list[0].name)
-          console.log(response.list[0].main.temp)
-          console.log(response.list[0].main.humidity)
-          console.log(response.list[0].wind.speed)
-          $("#currentCityDisplay").text(response.list[0].name)
+            var dayIcon = response.list[0].weather[0].icon
+            console.log(dayIcon)
+            var weatherIcon = $("<img>").attr(
+                "src",
+                "http://openweathermap.org/img/wn/" + dayIcon + "@2x.png"
+              );
+            
+          $("#currentCityDisplay").text(response.list[0].name + " " + moment().format("MMMM Do YYYY"))
+          $("#currentCityDisplay").append(weatherIcon)
           $("#currentCityTemp").text("Temperature: " + response.list[0].main.temp + "F")
           $("#currentCityHumidity").text("Humidity: " + response.list[0].main.humidity + "%")
           $("#currentCityWind").text("Windspeed: " + response.list[0].wind.speed + " mph")
