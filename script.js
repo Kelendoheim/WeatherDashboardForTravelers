@@ -3,13 +3,14 @@ var cityInputEl = $(".cityInput");
 var cityArray = [];
 var searchedCitiesEl = $("#searchedCities");
 var currentCity = cityArray[0];
-var apiKey = "355f22b7eb531b3ff11fa1095db4b7b4"
-// var queryURL = "https://api.openweathermap.org/data/2.5/find?q=" + cityArray[0] + "&units=imperial&appid=" + apiKey
+var apiKey = "355f22b7eb531b3ff11fa1095db4b7b4";
+var forecastDispaly = $("#forecast")
 
 
 $(document).on("click", ".submitBtn", function (event) {
     event.preventDefault();
     searchedCitiesEl.empty();
+    forecastDispaly.empty();
     cityArray.unshift($(event.target).siblings().val());
     console.log(cityArray[0]);
 
@@ -30,6 +31,37 @@ $(document).on("click", ".submitBtn", function (event) {
           $("#currentCityTemp").text("Temperature: " + response.list[0].main.temp + "F")
           $("#currentCityHumidity").text("Humidity: " + response.list[0].main.humidity + "%")
           $("#currentCityWind").text("Windspeed: " + response.list[0].wind.speed + " mph")
+    
+        });
+    $.ajax({
+        url: "https://api.openweathermap.org/data/2.5/forecast?q=" + cityArray[0] + "&units=imperial&cnt=7&appid=" + apiKey,
+        method: "GET"
+        })
+        .then(function(response) {
+            console.log(response)
+            for(i = 1; i < 6; i++){
+                var dayIcon = response.list[i].weather[0].icon
+            var weatherIcon = $("<img>").attr(
+                "src",
+                "http://openweathermap.org/img/wn/" + dayIcon + "@2x.png"
+              );
+              
+             cardEl = $("<div>");
+             tempEl = $("<h5>");
+             humidEl = $("<h5>");
+             cardEl.attr("class", "col-sm-2");
+             cardEl.text(moment().format('dddd'));
+                tempEl.text("Temperature: " + response.list[i].main.temp + "F")
+                humidEl.text("Humidity: " + response.list[i].main.humidity + "%")
+                cardEl.append(weatherIcon);
+                cardEl.append(tempEl)
+                cardEl.append(humidEl)
+                forecastDispaly.append(cardEl)
+
+                $("#currentCityTemp").text("Temperature: " + response.list[0].main.temp + "F")
+                $("#currentCityHumidity").text("Humidity: " + response.list[0].main.humidity + "%")
+            }
+            
     
         });
 
