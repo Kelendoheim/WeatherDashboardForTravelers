@@ -7,6 +7,7 @@ var apiKey = "355f22b7eb531b3ff11fa1095db4b7b4";
 var forecastDispaly = $("#forecast")
 
 
+
 $(document).on("click", ".submitBtn", function (event) {
     event.preventDefault();
     searchedCitiesEl.empty();
@@ -19,6 +20,8 @@ $(document).on("click", ".submitBtn", function (event) {
         method: "GET"
       })
         .then(function(response) {
+            var lat = response.list[0].coord.lat
+            var long = response.list[0].coord.lon
             var dayIcon = response.list[0].weather[0].icon
             console.log(dayIcon)
             var weatherIcon = $("<img>").attr(
@@ -33,6 +36,7 @@ $(document).on("click", ".submitBtn", function (event) {
           $("#currentCityWind").text("Windspeed: " + response.list[0].wind.speed + " mph")
     
         });
+    
     $.ajax({
         url: "https://api.openweathermap.org/data/2.5/forecast?q=" + cityArray[0] + "&units=imperial&cnt=7&appid=" + apiKey,
         method: "GET"
@@ -45,12 +49,13 @@ $(document).on("click", ".submitBtn", function (event) {
                 "src",
                 "http://openweathermap.org/img/wn/" + dayIcon + "@2x.png"
               );
-              
+                
              cardEl = $("<div>");
              tempEl = $("<h5>");
              humidEl = $("<h5>");
+             var currentDate = moment();
              cardEl.attr("class", "col-sm-2");
-             cardEl.text(moment().format('dddd'));
+             cardEl.text(currentDate.add('days', i));
                 tempEl.text("Temperature: " + response.list[i].main.temp + "F")
                 humidEl.text("Humidity: " + response.list[i].main.humidity + "%")
                 cardEl.append(weatherIcon);
